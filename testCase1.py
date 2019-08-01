@@ -2,7 +2,7 @@ import pdftotext
 import json
 import os
 import re
-
+# DCMM
 PDF_TYPE = "VN102347"
 CURR_CONFIG = {}
 
@@ -26,14 +26,14 @@ with open(PDF_TYPE + '/' + PDF_TYPE + '.json', 'r', encoding='utf8') as json_fil
 
 #KEYWORD FOR SGNV42665600
 """
-KEYWORD = ['BK#','S/C','FREIGHT PREPAID','SHIPPER','CNEE','DESCIPTIONS', 
+KEYWORD = ['BK#','S/C','FREIGHT PREPAID','SHIPPER','CNEE','DESCIPTIONS',
             'HS CODE','AMS HBL#','SCAC CODE','ACI CODE','NAC','TOTAL']
 """
 
 #KEYWORD FOR TOKYO
 """
 KEYWORD = ['Shipper','Consignee','Notify Party','POL','POD',
-            'VSL/VOY','ETD','Q’TY','G.W','Measurement', 
+            'VSL/VOY','ETD','Q’TY','G.W','Measurement',
             'Cont / Seal No.','Description of goods','-----',
             'FREIGHT PREPAID','HS CODE']
 """
@@ -42,7 +42,7 @@ KEYWORD = ['Shipper','Consignee','Notify Party','POL','POD',
 KEYWORD = ['SHIPPER / EXPORT', 'CONSIGNEE', 'NOTIFY PARTY', 'B/L NO', 'EXPORT REFERENCES', 'FREIGHT PAYABLE AT', 'TYE OF SERVICE', 'CONTAINER NO',
             'ALSO NOTIFY', 'NUMBER ORIGINAL BILL OF LADING ISSUED', 'PRE-CARRIAGE BY', 'OCEAN VESSEL / VOYAGE', 'PORT OF DISCHARGE', 'PLACE OF RECEIPT',
             'PORT OF LOADING', 'PLACE OF DELIVERY', 'MARKS AND NUMBERS', 'NO.OF CONT', 'DESCRIPTION OF PACKGES AND GOODS', 'GROSS WEIGHT',
-            'MEASUREMENT', 'SIGNED AT', 'DATE', 'FREIGHT AND CHARES', 'PREPAID', 'COLLECT', 'SHIPPED ONBOARD THE VESSEL']            
+            'MEASUREMENT', 'SIGNED AT', 'DATE', 'FREIGHT AND CHARES', 'PREPAID', 'COLLECT', 'SHIPPED ONBOARD THE VESSEL']
 
 
 fileName = list(filter(lambda pdf: pdf[-3:] == 'pdf' ,os.listdir(PDF_TYPE)))
@@ -73,24 +73,24 @@ if __name__ == '__main__':
                     found.append([r,lineList[r].find(key)])
             kwpos_temp[key]=found
 
-        
+
         kwpos={}
-        
+
         for key in KEYWORD:
             l=len(kwpos_temp[key])
             pos=key.rfind('  ')
-            if (pos!=-1): newKey=key[:pos] 
+            if (pos!=-1): newKey=key[:pos]
             else: newKey=key
             if (l!=1):
-                for i in range(l): 
+                for i in range(l):
                     if (i == 0): kwpos[newKey]=kwpos_temp[key][i]
-                    else: kwpos[newKey+str(i)]=kwpos_temp[key][i] 
+                    else: kwpos[newKey+str(i)]=kwpos_temp[key][i]
             else:
                 kwpos[newKey]=kwpos_temp[key][0]
-       
+
         for key in CONFIG:
             if (key in kwpos):
-                if (CONFIG[key]['isFlex']): 
+                if (CONFIG[key]['isFlex']):
                     top=CONFIG[key]['endObject']['top']
                     bot=CONFIG[key]['endObject']['bottom']
                     topAndKeywordOnSingleLine=CONFIG[key]['topAndKeywordOnSingleLine']
@@ -100,22 +100,22 @@ if __name__ == '__main__':
                     minDistance=100000
                     for kw in kwpos:
                         # print('In the loop key and kw',key,kw)
-                        if (top==kw and abs(kwpos[kw][0]-kwpos[key][0])<minDistance): 
+                        if (top==kw and abs(kwpos[kw][0]-kwpos[key][0])<minDistance):
                             minDistance=abs(kwpos[kw][0]-kwpos[key][0])
                             toprow=kwpos[kw][0]
                     minDistance=100000
                     for kw in kwpos:
-                        if (bot==kw and abs(kwpos[kw][0]-kwpos[key][0])<minDistance): 
+                        if (bot==kw and abs(kwpos[kw][0]-kwpos[key][0])<minDistance):
                             minDistance=abs(kwpos[kw][0]-kwpos[key][0])
                             botrow=kwpos[kw][0]
                     # print(key)
-                    if (top!=-1): 
+                    if (top!=-1):
                         if (topAndKeywordOnSingleLine): CONFIG[key]['row'][0]=toprow
                         elif (contentSameLineWithKeyword==0): CONFIG[key]['row'][0]=toprow+CONFIG[key]['row'][0]-kwpos[top][0]
                         else: CONFIG[key]['row'][0]=toprow+1
                     if (bot!=-1): CONFIG[key]['row'][1]=botrow
             else:
-                if (CONFIG[key]['isFlex']): 
+                if (CONFIG[key]['isFlex']):
                     top=CONFIG[key]['endObject']['top']
                     bot=CONFIG[key]['endObject']['bottom']
                     topAndKeywordOnSingleLine=CONFIG[key]['topAndKeywordOnSingleLine']
@@ -125,16 +125,16 @@ if __name__ == '__main__':
                     minDistance=100000
                     for kw in kwpos:
                         # print('In the loop key and kw',key,kw)
-                        if (top==kw and abs(kwpos[kw][0]-CONFIG[key]['row'][0])<minDistance): 
+                        if (top==kw and abs(kwpos[kw][0]-CONFIG[key]['row'][0])<minDistance):
                             minDistance=abs(kwpos[kw][0]-CONFIG[key]['row'][0])
                             toprow=kwpos[kw][0]
                     minDistance=100000
                     for kw in kwpos:
-                        if (bot==kw and abs(kwpos[kw][0]-CONFIG[key]['row'][0])<minDistance): 
+                        if (bot==kw and abs(kwpos[kw][0]-CONFIG[key]['row'][0])<minDistance):
                             minDistance=abs(kwpos[kw][0]-CONFIG[key]['row'][0])
                             botrow=kwpos[kw][0]
                     # print(key)
-                    if (top!=-1): 
+                    if (top!=-1):
                         if (topAndKeywordOnSingleLine): CONFIG[key]['row'][0]=toprow
                         elif (contentSameLineWithKeyword==0): CONFIG[key]['row'][0]=toprow+CONFIG[key]['row'][0]-kwpos[top][0]
                         else: CONFIG[key]['row'][0]=toprow+1
@@ -151,7 +151,7 @@ if __name__ == '__main__':
             if (CONFIG[key]['hasSubfield']):
                 pos=0
                 for subfield in CONFIG[key]['subfields']:
-                    if CONFIG[key]['subfields'][subfield]!=10: 
+                    if CONFIG[key]['subfields'][subfield]!=10:
                         result=re.search(CONFIG[key]['subfields'][subfield],data[key]).span()
                         data[key+'_'+subfield]=data[key][result[0]:result[1]+1]
                         pos=result[1]
