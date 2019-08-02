@@ -2,7 +2,7 @@ import pdftotext
 import json
 import os
 import re
-# DCMM
+# DCMM DCMMM DCMM
 PDF_TYPE = "VN102347"
 CURR_CONFIG = {}
 
